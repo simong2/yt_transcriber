@@ -10,8 +10,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late TextEditingController _searchController;
-
-  late String _mezmurName;
+  bool startSearch = false;
 
   @override
   void initState() {
@@ -63,7 +62,9 @@ class _MainScreenState extends State<MainScreen> {
                     const SizedBox(width: 10),
                     IconButton(
                       onPressed: () {
-                        search(_searchController.text);
+                        setState(() {
+                          startSearch = true;
+                        });
                       },
                       icon: const Icon(
                         Icons.search,
@@ -80,13 +81,52 @@ class _MainScreenState extends State<MainScreen> {
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
-                // border: Border(top: BorderSide(color: Colors.black)),
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(30),
                 ),
               ),
-              child: const Center(
-                child: Text('here'),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: Column(
+                  children: [
+                    const Center(
+                      child: Text(
+                        'Song lyrics: ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Card(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: startSearch
+                              ? FutureBuilder(
+                                  future: search(_searchController.text),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    } else if (snapshot.hasError) {
+                                      return Center(
+                                          child:
+                                              Text('Error: ${snapshot.error}'));
+                                    } else {
+                                      return Text(snapshot.data!);
+                                    }
+                                  },
+                                )
+                              : const Text('Try by entering a song above'),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
