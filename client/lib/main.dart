@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'MezmurSearch',
+      title: 'YT Search',
       // theme: ThemeData(
       //
       //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
